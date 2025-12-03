@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human–AI Workforce Architecture</title>
+    <!-- Tailwind CSS for layout scaffolding -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Rajdhani for the technical blueprint look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-deep: #05080f;
+            --gold-primary: #eab308;
+            --gold-dim: #854d0e;
+            --gold-glow: #fbbf24;
+            --cyan-accent: #06b6d4;
+            --grid-line: rgba(234, 179, 8, 0.1);
+            --glass-bg: rgba(5, 8, 15, 0.7);
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            /* Subtle background grid */
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
+        }
+
+        /* Ambient Noise Texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 50;
+        }
+
+        /* Typography & Glows */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+        
+        .box-glow {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.1), inset 0 0 20px rgba(234, 179, 8, 0.05);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .box-glow-muted {
+            box-shadow: 0 0 10px rgba(133, 77, 14, 0.05);
+            border: 1px solid rgba(133, 77, 14, 0.2);
+            background: rgba(5, 8, 15, 0.8);
+        }
+
+        /* Blueprint Decorations */
+        .tech-cross {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+        }
+        .tech-cross::before, .tech-cross::after {
+            content: '';
+            position: absolute;
+            background: var(--gold-dim);
+        }
+        .tech-cross::before { width: 100%; height: 1px; top: 50%; left: 0; }
+        .tech-cross::after { width: 1px; height: 100%; top: 0; left: 50%; }
+
+        /* The Cognitive Compass (Centerpiece) */
+        .compass-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .orbit {
+            position: absolute;
+            border-radius: 50%;
+            transform-style: preserve-3d;
+        }
+
+        /* Inner Ring: Capabilities */
+        .ring-inner {
+            width: 220px;
+            height: 220px;
+            border: 1px solid var(--gold-primary);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+            animation: rotate-slow 60s linear infinite;
+        }
+
+        /* Middle Ring: Systems */
+        .ring-middle {
+            width: 340px;
+            height: 340px;
+            border: 1px dashed var(--cyan-accent);
+            opacity: 0.6;
+            animation: rotate-reverse 80s linear infinite;
+        }
+        
+        /* Outer Orbit: Learning Loop */
+        .ring-outer {
+            width: 460px;
+            height: 460px;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            border-top-color: var(--gold-primary);
+            animation: rotate-slow 40s linear infinite;
+        }
+
+        .satellite {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: var(--gold-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold-glow);
+            /* Position on the outer ring */
+            transform: translate(-50%, -50%) rotate(0deg) translate(230px) rotate(0deg); 
+            animation: orbit-anim 40s linear infinite;
+        }
+
+        /* Central Figures */
+        .core-silhouette {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            gap: 2px;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 8px var(--gold-primary));
+        }
+
+        /* Animations */
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes rotate-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes orbit-anim {
+            from { transform: translate(-50%, -50%) rotate(0deg) translate(230px) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg) translate(230px) rotate(-360deg); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Connector Lines */
+        .connector-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+            width: 100%;
+            position: absolute;
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #020408;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-dim);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center py-10 px-4">
+
+    <!-- Noise Texture -->
+    <div class="noise-overlay"></div>
+
+    <!-- Main Infographic Container -->
+    <main class="relative w-full max-w-6xl flex flex-col gap-8">
+        
+        <!-- TOP BAND: Header -->
+        <header class="relative text-center pb-6 border-b border-yellow-900/30">
+            <!-- Decorative Arcs -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 border-t border-yellow-500/20 rounded-full pointer-events-none"></div>
+            
+            <div class="flex justify-center gap-4 mb-2 opacity-60">
+                <div class="h-px w-16 bg-yellow-600 mt-3"></div>
+                <span class="text-xs tracking-[0.3em] text-yellow-500 uppercase">System Architecture V.4.0</span>
+                <div class="h-px w-16 bg-yellow-600 mt-3"></div>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-widest text-white text-glow mb-4">
+                Why AI Fails <span class="text-yellow-600 mx-2">—</span> And How to Build a <br/>
+                <span class="text-yellow-500">Human–AI Workforce</span> That Actually Works
+            </h1>
+
+            <div class="max-w-3xl mx-auto box-glow py-3 px-6 rounded-sm bg-black/40 relative">
+                <!-- Blueprint ticks -->
+                <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-yellow-500"></div>
+                <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-yellow-500"></div>
+                <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-yellow-500"></div>
+                <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-yellow-500"></div>
+                
+                <p class="text-yellow-100/80 text-sm tracking-wide leading-relaxed">
+                    LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT. SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA. UT ENIM AD MINIM VENIAM.
+                </p>
+            </div>
+        </header>
+
+        <!-- MAIN GRID LAYOUT -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative py-8">
+            
+            <!-- LEFT SIDEBAR: The Problem (Why AI Fails) -->
+            <aside class="lg:col-span-3 flex flex-col gap-6 relative z-10">
+                <h3 class="text-yellow-700/80 text-xs tracking-[0.2em] uppercase mb-2 border-b border-yellow-900/30 pb-2">Failure Modes</h3>
+                
+                <!-- Card 1 -->
+                <div class="box-glow-muted p-4 relative group">
+                    <div class="w-full h-[1px] bg-yellow-900/50 absolute top-0 left-0"></div>
+                    <div class="flex items-start gap-3">
+                        <i class="ph ph-warning text-2xl text-yellow-800 group-hover:text-red-500 transition-colors"></i>
+                        <div>
+                            <h4 class="text-yellow-600 font-bold uppercase tracking-wider text-sm mb-1">Tools-First Fallacy</h4>
+                            <p class="text-gray-400 text-xs leading-tight uppercase tracking-wide">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="box-glow-muted p-4 relative group">
+                    <div class="w-full h-[1px] bg-yellow-900/50 absolute top-0 left-0"></div>
+                    <div class="flex items-start gap-3">
+                        <i class="ph ph-puzzle-piece text-2xl text-yellow-800 group-hover:text-red-500 transition-colors"></i>
+                        <div>
+                            <h4 class="text-yellow-600 font-bold uppercase tracking-wider text-sm mb-1">Missing Context</h4>
+                            <p class="text-gray-400 text-xs leading-tight uppercase tracking-wide">
+                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="box-glow-muted p-4 relative group">
+                    <div class="w-full h-[1px] bg-yellow-900/50 absolute top-0 left-0"></div>
+                    <div class="flex items-start gap-3">
+                        <i class="ph ph-infinity text-2xl text-yellow-800 group-hover:text-red-500 transition-colors"></i>
+                        <div>
+                            <h4 class="text-yellow-600 font-bold uppercase tracking-wider text-sm mb-1">Broken Loops</h4>
+                            <p class="text-gray-400 text-xs leading-tight uppercase tracking-wide">
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTERPIECE: Cognitive Compass -->
+            <div class="lg:col-span-6 flex justify-center items-center py-10 lg:py-0 relative">
+                <!-- Background Grid Behind Compass -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                    <div class="w-full h-px bg-yellow-500/30"></div>
+                    <div class="h-full w-px bg-yellow-500/30 absolute"></div>
+                </div>
+
+                <div class="compass-container scale-75 sm:scale-90 md:scale-100">
+                    
+                    <!-- Outer Ring: Learning Loop -->
+                    <div class="orbit ring-outer border-yellow-500/20">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-black px-2 text-[10px] text-yellow-500 uppercase tracking-widest">
+                            Learning Loop
+                        </div>
+                        <div class="satellite"></div> <!-- Orbiting Dot -->
+                        
+                        <!-- Technical Labels on Orbit -->
+                        <div class="absolute bottom-10 right-10 text-[9px] text-yellow-700 font-mono rotate-45">TELEM: 84.3hz</div>
+                        <div class="absolute top-10 left-10 text-[9px] text-yellow-700 font-mono -rotate-45">DRIFT: NULL</div>
+                    </div>
+
+                    <!-- Middle Ring: Systems -->
+                    <div class="orbit ring-middle">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-black px-2 text-[10px] text-cyan-500 uppercase tracking-widest">
+                            Systems Integration
+                        </div>
+                        <!-- Decorative dashes -->
+                        <div class="absolute top-1/2 left-0 w-2 h-2 bg-cyan-900/50 rounded-full -translate-x-1/2"></div>
+                        <div class="absolute top-1/2 right-0 w-2 h-2 bg-cyan-900/50 rounded-full translate-x-1/2"></div>
+                    </div>
+
+                    <!-- Inner Ring: Capabilities -->
+                    <div class="orbit ring-inner">
+                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-black px-2 text-[10px] text-yellow-400 uppercase tracking-widest shadow-black shadow-lg">
+                            Core Capabilities
+                        </div>
+                    </div>
+
+                    <!-- Core Silhouettes (SVG) -->
+                    <div class="core-silhouette">
+                        <!-- Abstract Human Head Left -->
+                        <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30 10C15 10 5 25 5 40V80H55V40C55 25 45 10 30 10Z" stroke="#eab308" stroke-width="2" fill="rgba(234, 179, 8, 0.1)"/>
+                            <circle cx="30" cy="35" r="5" fill="#eab308"/>
+                            <rect x="20" y="50" width="20" height="2" fill="#eab308"/>
+                        </svg>
+                        
+                        <!-- Connection Spark -->
+                        <div class="w-1 h-10 bg-yellow-500 self-center animate-pulse shadow-[0_0_10px_#fbbf24]"></div>
+
+                        <!-- Abstract AI Node Right -->
+                        <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30 10L55 25V65L30 80L5 65V25L30 10Z" stroke="#06b6d4" stroke-width="2" fill="rgba(6, 182, 212, 0.1)"/>
+                            <circle cx="30" cy="45" r="8" stroke="#06b6d4" stroke-width="1"/>
+                            <circle cx="30" cy="45" r="3" fill="#06b6d4"/>
+                            <line x1="30" y1="10" x2="30" y2="37" stroke="#06b6d4" stroke-width="1"/>
+                            <line x1="5" y1="25" x2="23" y2="40" stroke="#06b6d4" stroke-width="1"/>
+                            <line x1="55" y1="25" x2="37" y2="40" stroke="#06b6d4" stroke-width="1"/>
+                        </svg>
+                    </div>
+
+                    <!-- Annotation Labels Floating around Core -->
+                    <div class="absolute text-[9px] text-yellow-500/60 uppercase tracking-wider top-[35%] right-[28%]">Analysis</div>
+                    <div class="absolute text-[9px] text-yellow-500/60 uppercase tracking-wider top-[35%] left-[28%]">Intuition</div>
+                    <div class="absolute text-[9px] text-yellow-500/60 uppercase tracking-wider bottom-[35%] left-[30%]">Ethics</div>
+                    <div class="absolute text-[9px] text-yellow-500/60 uppercase tracking-wider bottom-[35%] right-[30%]">Scale</div>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR: The Path Forward -->
+            <aside class="lg:col-span-3 flex flex-col gap-6 relative z-10">
+                <h3 class="text-yellow-400 text-xs tracking-[0.2em] uppercase mb-2 border-b border-yellow-500/30 pb-2 text-right">Optimization Path</h3>
+
+                <!-- Card 1 -->
+                <div class="box-glow p-4 relative text-right">
+                    <div class="w-2 h-2 bg-yellow-500 absolute top-0 right-0"></div>
+                    <div class="w-full h-[1px] bg-yellow-500/50 absolute top-0 right-0"></div>
+                    <h4 class="text-yellow-400 font-bold uppercase tracking-wider text-sm mb-1">Define Capabilities</h4>
+                    <p class="text-yellow-100/70 text-xs leading-tight uppercase tracking-wide">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="box-glow p-4 relative text-right">
+                    <div class="w-2 h-2 bg-yellow-500 absolute top-0 right-0"></div>
+                    <div class="w-full h-[1px] bg-yellow-500/50 absolute top-0 right-0"></div>
+                    <h4 class="text-yellow-400 font-bold uppercase tracking-wider text-sm mb-1">Structure Systems</h4>
+                    <p class="text-yellow-100/70 text-xs leading-tight uppercase tracking-wide">
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="box-glow p-4 relative text-right">
+                    <div class="w-2 h-2 bg-yellow-500 absolute top-0 right-0"></div>
+                    <div class="w-full h-[1px] bg-yellow-500/50 absolute top-0 right-0"></div>
+                    <h4 class="text-yellow-400 font-bold uppercase tracking-wider text-sm mb-1">Install Learning</h4>
+                    <p class="text-yellow-100/70 text-xs leading-tight uppercase tracking-wide">
+                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <!-- BOTTOM BAND: The Evolution Loop -->
+        <footer class="w-full mt-4 pt-8 border-t border-yellow-900/30 relative">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-8 bg-yellow-600"></div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-8">
+                <!-- Step 1 -->
+                <div class="flex items-center gap-4 opacity-70">
+                    <span class="text-3xl font-bold text-yellow-800">01</span>
+                    <div class="flex flex-col">
+                        <span class="text-yellow-500 text-xs uppercase tracking-widest">Initial State</span>
+                        <span class="text-[10px] text-gray-400">LOREM IPSUM</span>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="h-px flex-1 bg-yellow-900/50 mx-4 relative hidden md:block">
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-600 rotate-45"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex items-center gap-4 opacity-100">
+                    <span class="text-3xl font-bold text-yellow-500 text-glow">02</span>
+                    <div class="flex flex-col">
+                        <span class="text-yellow-400 text-xs uppercase tracking-widest font-bold">Evolution Cycle</span>
+                        <span class="text-[10px] text-yellow-200/60">DOLOR SIT AMET</span>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="h-px flex-1 bg-yellow-900/50 mx-4 relative hidden md:block">
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-600 rotate-45"></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex items-center gap-4 opacity-70">
+                    <span class="text-3xl font-bold text-yellow-800">03</span>
+                    <div class="flex flex-col">
+                        <span class="text-yellow-500 text-xs uppercase tracking-widest">Optimized Output</span>
+                        <span class="text-[10px] text-gray-400">CONSECTETUR ADIPIS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-10">
+                 <p class="text-[10px] text-yellow-900 uppercase tracking-[0.5em] font-mono">HelixForge System // Classification: Unclassified</p>
+            </div>
+        </footer>
+
+        <!-- Tech Decorations (Absolute positioned grid markers) -->
+        <div class="tech-cross top-10 left-10"></div>
+        <div class="tech-cross top-10 right-10"></div>
+        <div class="tech-cross bottom-10 left-10"></div>
+        <div class="tech-cross bottom-10 right-10"></div>
+        
+    </main>
+</body>
+</html>
