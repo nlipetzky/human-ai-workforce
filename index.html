@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelixForge Venture Studio Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05080f;
+            --bg-panel: #0a0f1c;
+            --gold-primary: #eab308;
+            --gold-glow: #fbbf24;
+            --gold-dim: #854d0e;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --line-thin: 0.5px;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .blueprint-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: 
+                radial-gradient(circle at 50% 30%, rgba(20, 30, 50, 0.4) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(234, 179, 8, 0.03) 0%, transparent 50%);
+            border-left: 1px solid rgba(234, 179, 8, 0.1);
+            border-right: 1px solid rgba(234, 179, 8, 0.1);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Typography & Glows */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        .glow-box {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.1), inset 0 0 20px rgba(234, 179, 8, 0.05);
+        }
+        .glow-line {
+            filter: drop-shadow(0 0 2px rgba(234, 179, 8, 0.6));
+        }
+
+        /* SVG Utilities */
+        .stroke-gold { stroke: var(--gold-primary); }
+        .stroke-dim { stroke: var(--gold-dim); }
+        .fill-gold { fill: var(--gold-primary); }
+
+        .orbital-grid {
+            background-image: 
+                linear-gradient(rgba(234, 179, 8, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(234, 179, 8, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .star-node { transition: all 0.3s ease; }
+        .star-node:hover { filter: drop-shadow(0 0 8px var(--gold-primary)); cursor: pointer; }
+
+        .ontology-cell {
+            border: 1px solid rgba(234, 179, 8, 0.15);
+            transition: background 0.2s;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .ontology-cell:hover { background: rgba(234, 179, 8, 0.1); color: #fff; }
+
+        /* Animation */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .pulse-anim { animation: pulse-slow 4s infinite ease-in-out; }
+
+        /* Custom Scrollbar for container if needed */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #05080f; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="py-10 px-4">
+
+    <!-- MAIN INFOGRAPHIC CONTAINER -->
+    <div class="blueprint-container flex flex-col relative pb-20">
+        
+        <!-- DECORATIVE BG ELEMENTS -->
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <svg class="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-full opacity-10" viewBox="0 0 1000 2000">
+                <circle cx="500" cy="600" r="450" fill="none" stroke="#eab308" stroke-width="1" stroke-dasharray="10 20" />
+                <circle cx="500" cy="600" r="550" fill="none" stroke="#eab308" stroke-width="0.5" />
+                <path d="M 0 100 L 1000 100" stroke="#eab308" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <!-- 1. TOP BAND (VISION LAYER) -->
+        <header class="relative z-10 pt-16 pb-12 px-12 text-center">
+            <!-- Glowing Arc Background -->
+            <svg class="absolute top-0 left-0 w-full h-64 pointer-events-none opacity-40" preserveAspectRatio="none">
+                <path d="M 0 0 Q 500 150 1000 0" fill="none" stroke="url(#grad1)" stroke-width="2" class="glow-line" />
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:transparent;stop-opacity:0" />
+                        <stop offset="50%" style="stop-color:#eab308;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:transparent;stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <!-- Technical Annotations Top -->
+            <div class="flex justify-between text-[10px] tracking-[0.2em] text-yellow-600 mb-4 opacity-70 uppercase font-mono">
+                <span>Ref: HX-2025 // Bio-Ops</span>
+                <span>V. 5.1.0 [LIVE]</span>
+                <span>Sec-Level: EXECUTIVE</span>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-widest text-yellow-400 glow-text mb-2">HELIXFORGE VENTURE STUDIO</h1>
+            <div class="text-xl text-yellow-600 tracking-[0.5em] font-light uppercase mb-6">System Architecture Map</div>
+            
+            <div class="h-px w-32 bg-yellow-500 mx-auto mb-8 glow-line"></div>
+            
+            <div class="bg-yellow-900/10 border border-yellow-500/20 p-6 max-w-3xl mx-auto rounded-sm backdrop-blur-sm">
+                <h2 class="text-lg font-bold tracking-[0.2em] text-yellow-200 mb-4 uppercase border-b border-yellow-500/20 pb-2 inline-block">Portfolio Operating System — Account Layer</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mt-2">
+                    <div>
+                        <p class="text-[11px] uppercase tracking-widest text-yellow-500 mb-1">Vision</p>
+                        <p class="text-sm text-slate-300 font-light leading-relaxed">Build, validate, and spin out 10 AI-native healthtech ventures.</p>
+                        
+                        <p class="text-[11px] uppercase tracking-widest text-yellow-500 mb-1 mt-4">Core Constraints</p>
+                        <p class="text-sm text-slate-300 font-light leading-relaxed">Biotech compliance workload, limited RevOps resources.</p>
+                    </div>
+                    <div>
+                        <p class="text-[11px] uppercase tracking-widest text-yellow-500 mb-1">Economic Levers</p>
+                        <p class="text-sm text-slate-300 font-light leading-relaxed">Spin-out velocity, regulatory readiness, shared R&D arcs.</p>
+                        
+                        <p class="text-[11px] uppercase tracking-widest text-yellow-500 mb-1 mt-4">Portfolio KPIs</p>
+                        <p class="text-sm text-slate-300 font-light leading-relaxed">Time-to-prototype, time-to-governance, data activation rate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="mt-8 flex justify-center opacity-50">
+                <svg width="24" height="24" viewBox="0 0 24 24" class="fill-yellow-500 animate-bounce"><path d="M12 21l-12-18h24z"/></svg>
+            </div>
+        </header>
+
+
+        <!-- 2. WORKSTREAM GRID BAND -->
+        <section class="relative z-10 px-6 py-8 mb-4">
+            <!-- Orbital Ring Context -->
+            <div class="absolute inset-0 border-y border-yellow-900/30 bg-yellow-900/5"></div>
+            
+            <div class="grid grid-cols-5 gap-3 relative">
+                
+                <!-- WS 1: GOVERNANCE -->
+                <div class="flex flex-col items-center text-center group h-full">
+                    <div class="w-full h-1 bg-yellow-600/30 mb-2 group-hover:bg-yellow-500 transition-colors"></div>
+                    <div class="mb-3 text-yellow-500">
+                        <!-- Icon: Shield/Doc -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3 class="text-[11px] font-bold uppercase tracking-widest text-yellow-200 mb-1">Governance & Compliance</h3>
+                    <div class="text-[9px] font-mono text-yellow-600 mb-2">KONSTELLATION: REGULATORY OS</div>
+                    <p class="text-[10px] text-slate-400 leading-tight px-1">
+                        Board Packet & FDA Readiness Engine. Cross-reference SOPs with FDA databases.
+                    </p>
+                </div>
+
+                <!-- WS 2: GTM -->
+                <div class="flex flex-col items-center text-center group border-l border-yellow-900/20 h-full">
+                    <div class="w-full h-1 bg-yellow-600/30 mb-2 group-hover:bg-yellow-500 transition-colors"></div>
+                    <div class="mb-3 text-yellow-500">
+                        <!-- Icon: Chart/Target -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                    </div>
+                    <h3 class="text-[11px] font-bold uppercase tracking-widest text-yellow-200 mb-1">GTM Execution</h3>
+                    <div class="text-[9px] font-mono text-yellow-600 mb-2">KONSTELLATION: GTM EXECUTION OS</div>
+                    <p class="text-[10px] text-slate-400 leading-tight px-1">
+                        Market Intelligence & Pipeline Engine. Automated enrichment & competitor scans.
+                    </p>
+                </div>
+
+                <!-- WS 3: PRODUCT (Center) -->
+                <div class="flex flex-col items-center text-center group border-l border-r border-yellow-900/40 bg-yellow-900/10 glow-box rounded-sm pt-4 -mt-4 pb-4 h-full">
+                    <div class="mb-3 text-yellow-400 glow-text">
+                        <!-- Icon: Code/Structure -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    </div>
+                    <h3 class="text-[12px] font-bold uppercase tracking-widest text-white mb-1">Product & Engineering</h3>
+                    <div class="text-[9px] font-mono text-yellow-500 mb-2">KONSTELLATION: PROD-DEV OS</div>
+                    <p class="text-[10px] text-slate-300 leading-tight px-1">
+                        Requirements & Sprint Intelligence. Dependency mapping & risk prediction.
+                    </p>
+                </div>
+
+                <!-- WS 4: FINANCE -->
+                <div class="flex flex-col items-center text-center group border-r border-yellow-900/20 h-full">
+                    <div class="w-full h-1 bg-yellow-600/30 mb-2 group-hover:bg-yellow-500 transition-colors"></div>
+                    <div class="mb-3 text-yellow-500">
+                        <!-- Icon: Graph -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h3 class="text-[11px] font-bold uppercase tracking-widest text-yellow-200 mb-1">Financial Operations</h3>
+                    <div class="text-[9px] font-mono text-yellow-600 mb-2">KONSTELLATION: PORTFOLIO FIN-OS</div>
+                    <p class="text-[10px] text-slate-400 leading-tight px-1">
+                        Real-Time Variance & Runway Engine. Burn-rate sentinel & forecasting.
+                    </p>
+                </div>
+
+                <!-- WS 5: ALIGNMENT -->
+                <div class="flex flex-col items-center text-center group h-full">
+                    <div class="w-full h-1 bg-yellow-600/30 mb-2 group-hover:bg-yellow-500 transition-colors"></div>
+                    <div class="mb-3 text-yellow-500">
+                        <!-- Icon: Users -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h3 class="text-[11px] font-bold uppercase tracking-widest text-yellow-200 mb-1">Founder Alignment</h3>
+                    <div class="text-[9px] font-mono text-yellow-600 mb-2">KONSTELLATION: ALIGNMENT OS</div>
+                    <p class="text-[10px] text-slate-400 leading-tight px-1">
+                        Equity, Role, & Incentive Engine. Vesting design & spin-out logic.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. STAR SYSTEMS / CONSTELLATIONS BAND (HERO) -->
+        <section class="relative z-10 py-12 px-8 bg-[#060b13] border-y border-yellow-900/50">
+            <!-- Background Grid -->
+            <div class="absolute inset-0 orbital-grid opacity-30"></div>
+            
+            <div class="absolute top-4 left-0 w-full text-center z-20">
+                 <span class="text-[10px] uppercase tracking-[0.3em] text-yellow-500">Portfolio Inheritance Layer: Shared Institutional IQ</span>
+            </div>
+
+            <div class="relative w-full aspect-[2/1.2] max-h-[550px] mx-auto flex items-center justify-center">
+                
+                <!-- SVG HERO VISUALIZATION -->
+                <svg viewBox="0 0 800 500" class="w-full h-full overflow-visible">
+                    <defs>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#854d0e" />
+                        </marker>
+                    </defs>
+
+                    <!-- Central Core -->
+                    <g transform="translate(400, 250)">
+                        <circle cx="0" cy="0" r="90" fill="none" stroke="#eab308" stroke-width="0.5" stroke-dasharray="5 5" opacity="0.6" />
+                        <circle cx="0" cy="0" r="160" fill="none" stroke="#854d0e" stroke-width="0.5" opacity="0.4" />
+                        <circle cx="0" cy="0" r="230" fill="none" stroke="#eab308" stroke-width="1" stroke-dasharray="50 20" opacity="0.3" />
+                        
+                        <!-- Core Sphere -->
+                        <circle cx="0" cy="0" r="45" fill="#eab308" fill-opacity="0.1" />
+                        <circle cx="0" cy="0" r="45" fill="none" stroke="#eab308" stroke-width="1.5" filter="url(#glow)" />
+                        <text x="0" y="5" text-anchor="middle" font-family="Rajdhani" font-size="11" fill="#fbbf24" letter-spacing="2" font-weight="bold">HELIXFORGE CORE</text>
+                        <text x="0" y="16" text-anchor="middle" font-family="Rajdhani" font-size="7" fill="#854d0e" letter-spacing="1">SHARED SERVICES</text>
+                    </g>
+
+                    <!-- Connections -->
+                    <path d="M400 205 L400 130" stroke="#854d0e" stroke-width="1" />
+                    <path d="M400 295 L400 370" stroke="#854d0e" stroke-width="1" />
+                    <path d="M360 225 L250 180" stroke="#854d0e" stroke-width="1" />
+                    <path d="M440 225 L550 180" stroke="#854d0e" stroke-width="1" />
+                    <path d="M360 275 L250 320" stroke="#854d0e" stroke-width="1" />
+                    <path d="M440 275 L550 320" stroke="#854d0e" stroke-width="1" />
+
+                    <!-- Node A: GOVERNANCE -->
+                    <g transform="translate(400, 130)" class="star-node">
+                        <circle r="6" fill="#0f172a" stroke="#eab308" stroke-width="2" />
+                        <text x="15" y="0" font-family="Rajdhani" font-size="12" fill="#e2e8f0" font-weight="bold">GOVERNANCE & FDA</text>
+                        <text x="15" y="10" font-family="Rajdhani" font-size="9" fill="#94a3b8">REGCHECK • DEVIATION SENTINEL</text>
+                        <text x="15" y="20" font-family="Rajdhani" font-size="7" fill="#64748b">INHERITANCE: 100%</text>
+                    </g>
+                    <!-- Node B: ALIGNMENT -->
+                    <g transform="translate(400, 370)" class="star-node">
+                        <circle r="6" fill="#0f172a" stroke="#eab308" stroke-width="2" />
+                        <text x="15" y="0" font-family="Rajdhani" font-size="12" fill="#e2e8f0" font-weight="bold">FOUNDER ALIGNMENT</text>
+                        <text x="15" y="10" font-family="Rajdhani" font-size="9" fill="#94a3b8">READINESS SCORER • CAP TABLE</text>
+                        <text x="15" y="20" font-family="Rajdhani" font-size="7" fill="#64748b">INHERITANCE: 90%</text>
+                    </g>
+                    <!-- Node C: GTM -->
+                    <g transform="translate(250, 180)" class="star-node">
+                        <circle r="5" fill="#0f172a" stroke="#eab308" stroke-width="1.5" />
+                        <text x="-12" y="-14" text-anchor="end" font-family="Rajdhani" font-size="11" fill="#e2e8f0" font-weight="bold">GTM EXECUTION</text>
+                        <text x="-12" y="-4" text-anchor="end" font-family="Rajdhani" font-size="8" fill="#94a3b8">LEADRANKER • COMPETITOR PULSE</text>
+                    </g>
+                    <!-- Node D: PRODUCT -->
+                    <g transform="translate(550, 180)" class="star-node">
+                        <circle r="5" fill="#0f172a" stroke="#eab308" stroke-width="1.5" />
+                        <text x="12" y="-14" font-family="Rajdhani" font-size="11" fill="#e2e8f0" font-weight="bold">PRODUCT INTEL</text>
+                        <text x="12" y="-4" font-family="Rajdhani" font-size="8" fill="#94a3b8">DEPENDENCY SENTINEL • JIRA AUTO</text>
+                    </g>
+                    <!-- Node E: FINANCE -->
+                    <g transform="translate(250, 320)" class="star-node">
+                        <circle r="5" fill="#0f172a" stroke="#eab308" stroke-width="1.5" />
+                        <text x="-12" y="2" text-anchor="end" font-family="Rajdhani" font-size="11" fill="#e2e8f0" font-weight="bold">FINANCIAL OPS</text>
+                        <text x="-12" y="12" text-anchor="end" font-family="Rajdhani" font-size="8" fill="#94a3b8">VARIANCE EXPLAINER • BURN SENTINEL</text>
+                    </g>
+                    <!-- Node F: MEMORY -->
+                    <g transform="translate(550, 320)" class="star-node">
+                        <circle r="5" fill="#0f172a" stroke="#eab308" stroke-width="1.5" />
+                        <text x="12" y="2" font-family="Rajdhani" font-size="11" fill="#e2e8f0" font-weight="bold">INSTITUTIONAL MEMORY</text>
+                        <text x="12" y="12" font-family="Rajdhani" font-size="8" fill="#94a3b8">SOP LIBRARY • LEARNING LOOPS</text>
+                    </g>
+
+                    <!-- Orbiting Satellites -->
+                    <circle cx="0" cy="0" r="2" fill="#fff">
+                        <animateMotion path="M300,250 a100,60 0 1,0 200,0 a100,60 0 1,0 -200,0" dur="10s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="0" cy="0" r="3" fill="#fbbf24">
+                        <animateMotion path="M250,250 a150,100 0 1,1 300,0 a150,100 0 1,1 -300,0" dur="15s" repeatCount="indefinite" />
+                    </circle>
+                </svg>
+            </div>
+        </section>
+
+
+        <!-- 4. AUTOMATION / TOOLS / DATA LAYER -->
+        <section class="relative z-10 px-8 py-10 gap-6 flex flex-col">
+            <h3 class="text-xs font-bold text-center text-yellow-500 uppercase tracking-widest mb-2 border-b border-yellow-800/30 pb-2">Automation Gravity Map</h3>
+
+            <!-- ROW 1: Automations -->
+            <div class="flex items-center gap-6 border-b border-yellow-900/30 pb-4">
+                <div class="w-32 text-right text-[11px] font-bold text-slate-400 uppercase tracking-widest">Active Agents</div>
+                <div class="flex-1 flex gap-2 overflow-hidden flex-wrap">
+                    <div class="flex items-center gap-2 bg-yellow-900/10 border border-yellow-600/30 px-2 py-1 rounded-sm">
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-500 pulse-anim"></div>
+                        <span class="text-[10px] uppercase text-yellow-100">RegCheck</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-900/10 border border-yellow-600/30 px-2 py-1 rounded-sm">
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-500 pulse-anim"></div>
+                        <span class="text-[10px] uppercase text-yellow-100">SOP Drift Analyzer</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-900/10 border border-yellow-600/30 px-2 py-1 rounded-sm">
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-500 pulse-anim"></div>
+                        <span class="text-[10px] uppercase text-yellow-100">LeadRanker</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-900/10 border border-yellow-600/30 px-2 py-1 rounded-sm">
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-500 pulse-anim"></div>
+                        <span class="text-[10px] uppercase text-yellow-100">Jira Sentinel</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-900/10 border border-yellow-600/30 px-2 py-1 rounded-sm">
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-500 pulse-anim"></div>
+                        <span class="text-[10px] uppercase text-yellow-100">Variance Explainer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: Tools -->
+            <div class="flex items-center gap-6 border-b border-yellow-900/30 pb-4">
+                <div class="w-32 text-right text-[11px] font-bold text-slate-400 uppercase tracking-widest">Tool Stack</div>
+                <div class="flex-1 flex gap-2 flex-wrap">
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">HubSpot</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">Linear</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">Airtable</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">Carta</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">Make.com</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">OpenAI API</span>
+                    <span class="px-2 py-1 bg-[#1e293b] text-slate-300 text-[10px] font-mono border border-slate-600 rounded">QuickBooks</span>
+                </div>
+            </div>
+
+            <!-- ROW 3: Data Objects -->
+            <div class="flex items-center gap-6">
+                <div class="w-32 text-right text-[11px] font-bold text-slate-400 uppercase tracking-widest">Data Objects</div>
+                <div class="flex-1 flex gap-2 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">SOPs</span>
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">Compliance Binders</span>
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">Leads</span>
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">Tickets</span>
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">Actuals vs Budget</span>
+                    <span class="px-2 py-0.5 rounded-full border border-yellow-500/50 text-yellow-200 text-[10px] bg-yellow-500/10">Equity Plans</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5. BOTTOM BAND (UNIFIED OS ONTOLOGY TABLE) -->
+        <section class="relative z-10 px-8 py-10">
+            <h3 class="text-center text-sm font-light tracking-[0.5em] text-yellow-500/70 mb-6 uppercase">Unified OS Ontology Table</h3>
+            
+            <div class="border border-yellow-800/40 relative">
+                <!-- Ticks -->
+                <div class="absolute -left-1 top-0 bottom-0 flex flex-col justify-between py-2">
+                    <div class="w-2 h-px bg-yellow-600"></div><div class="w-2 h-px bg-yellow-600"></div><div class="w-2 h-px bg-yellow-600"></div>
+                </div>
+
+                <div class="grid grid-cols-6 text-[10px] font-mono">
+                    <!-- HEADER -->
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-r border-yellow-800/30">LAYER</div>
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-r border-yellow-800/30 text-center">GOVERNANCE</div>
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-r border-yellow-800/30 text-center">GTM EXECUTION</div>
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-r border-yellow-800/30 text-center">PRODUCT / ENG</div>
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-r border-yellow-800/30 text-center">FINANCE</div>
+                    <div class="p-2 bg-yellow-900/30 text-yellow-400 font-bold border-b border-yellow-800/30 text-center">ALIGNMENT</div>
+
+                    <!-- Row: Capabilities -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">CAPABILITIES</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-300">SOP Mgmt</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-300">ICP Dev</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-300">Sprint Mgmt</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-300">FP&A</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-slate-300">Equity Logic</div>
+
+                    <!-- Row: Systems -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">SYSTEMS</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-white">Reg Engine</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-white">GTM Engine</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-white">Sprint Intel</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-white">FinOps Engine</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-white">Incentive Eng</div>
+
+                    <!-- Row: Automations -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">AUTOMATIONS</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-yellow-200">RegCheck</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-yellow-200">LeadRanker</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-yellow-200">Dependency</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-yellow-200">BurnRate</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-yellow-200">CapTable Bldr</div>
+
+                    <!-- Row: Tools -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">TOOLS</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Airtable</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">HubSpot</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Jira</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">QuickBooks</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-slate-400">Carta</div>
+
+                    <!-- Row: Data -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">DATA OBJ</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">SOPs</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Leads</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Tickets</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Actuals</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-slate-400">Equity Plans</div>
+
+                    <!-- Row: Telemetry -->
+                    <div class="p-2 text-yellow-600 border-b border-r border-yellow-800/20 font-bold">TELEMETRY</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Deviations</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Conversion</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Burndown</div>
+                    <div class="ontology-cell border-b border-r border-yellow-800/20 text-slate-400">Variance</div>
+                    <div class="ontology-cell border-b border-yellow-800/20 text-slate-400">Founder Score</div>
+
+                    <!-- Row: Governance -->
+                    <div class="p-2 text-yellow-600 border-r border-yellow-800/20 font-bold">OWNER</div>
+                    <div class="ontology-cell border-r border-yellow-800/20 text-yellow-600">Legal</div>
+                    <div class="ontology-cell border-r border-yellow-800/20 text-yellow-600">GTM Lead</div>
+                    <div class="ontology-cell border-r border-yellow-800/20 text-yellow-600">Prod Lead</div>
+                    <div class="ontology-cell border-r border-yellow-800/20 text-yellow-600">CFO</div>
+                    <div class="ontology-cell border-yellow-800/20 text-yellow-600">Mg Partners</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Decoration -->
+        <footer class="mt-4 flex justify-center opacity-40">
+            <svg width="200" height="20" viewBox="0 0 200 20">
+                <line x1="0" y1="10" x2="200" y2="10" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <rect x="95" y="5" width="10" height="10" fill="#fbbf24" transform="rotate(45 100 10)"/>
+            </svg>
+        </footer>
+
+    </div>
+</body>
+</html>
